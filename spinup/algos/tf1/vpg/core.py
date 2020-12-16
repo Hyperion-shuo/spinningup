@@ -68,7 +68,7 @@ def mlp_categorical_policy(x, a, hidden_sizes, activation, output_activation, ac
     act_dim = action_space.n
     logits = mlp(x, list(hidden_sizes)+[act_dim], activation, None)
     logp_all = tf.nn.log_softmax(logits)
-    pi = tf.squeeze(tf.multinomial(logits,1), axis=1)
+    pi = tf.squeeze(tf.multinomial(logits, 1), axis=1)
     logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp, logp_pi

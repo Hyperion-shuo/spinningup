@@ -1,4 +1,4 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 import gym
 from gym.spaces import Discrete, Box
@@ -27,6 +27,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
     logits = mlp(obs_ph, sizes=hidden_sizes+[n_acts])
 
     # make action selection op (outputs int actions, sampled from policy)
+    # logits is (batch_size, n_acts）, each slice [i,:] represents the unnormalized log-probabilities for all actions.
     actions = tf.squeeze(tf.multinomial(logits=logits,num_samples=1), axis=1)
 
     # make loss function whose gradient, for the right data, is policy gradient

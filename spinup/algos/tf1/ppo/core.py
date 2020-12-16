@@ -67,9 +67,13 @@ Policies
 def mlp_categorical_policy(x, a, hidden_sizes, activation, output_activation, action_space):
     act_dim = action_space.n
     logits = mlp(x, list(hidden_sizes)+[act_dim], activation, None)
+    # computer prob
     logp_all = tf.nn.log_softmax(logits)
+    # sample an action according to logits
     pi = tf.squeeze(tf.multinomial(logits,1), axis=1)
+    # compute prob for action a
     logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
+    # compute prob for sampled action pis
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp, logp_pi
 
@@ -77,6 +81,7 @@ def mlp_categorical_policy(x, a, hidden_sizes, activation, output_activation, ac
 def mlp_gaussian_policy(x, a, hidden_sizes, activation, output_activation, action_space):
     act_dim = a.shape.as_list()[-1]
     mu = mlp(x, list(hidden_sizes)+[act_dim], activation, output_activation)
+    # fixed variance
     log_std = tf.get_variable(name='log_std', initializer=-0.5*np.ones(act_dim, dtype=np.float32))
     std = tf.exp(log_std)
     pi = mu + tf.random_normal(tf.shape(mu)) * std

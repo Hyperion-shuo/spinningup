@@ -8,6 +8,7 @@ def flat_concat(xs):
     return tf.concat([tf.reshape(x,(-1,)) for x in xs], axis=0)
 
 def assign_params_from_flat(x, params):
+    # split x into shape params and assign x to according params
     flat_size = lambda p : int(np.prod(p.shape.as_list())) # the 'int' is important for scalars
     splits = tf.split(x, [flat_size(p) for p in params])
     new_params = [tf.reshape(p_new, p.shape) for p, p_new in zip(params, splits)]

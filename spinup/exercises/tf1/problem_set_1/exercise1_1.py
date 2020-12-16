@@ -13,6 +13,7 @@ likelihoods of those samples.
 
 """
 
+EPS=1e-8
 def gaussian_likelihood(x, mu, log_std):
     """
     Args:
@@ -28,7 +29,9 @@ def gaussian_likelihood(x, mu, log_std):
     #   YOUR CODE HERE    #
     #                     #
     #######################
-    return tf.constant(0)
+    log_likelihood = -0.5 * (((x - mu)/ (tf.exp(log_std) + EPS))**2 + np.log(2 * np.pi) + 2 * log_std)
+
+    return tf.reduce_sum(log_likelihood, axis=1)
 
 
 if __name__ == '__main__':
